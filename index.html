@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kedai Teras Rasuni - Enak dan Lezat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #peta {
+            height: 400px;
+            width: 100%;
+        }
+
+        :root {
+            --primary: #ff4d4d;
+            --secondary: #ffd700;
+            --dark: #333;
+            --light: #fff;
+        }
+
+        .navbar {
+            background: var(--primary);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: var(--light);
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        footer {
+            background: var(--dark);
+            color: var(--light);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #peta {
+            height: 300px;
+            width: 100%;
+        }
+
+        :root {
+            --primary: #ff4d4d;
+            --secondary: #ffd700;
+            --dark: #333;
+            --light: #fff;
+        }
+
+        .navbar {
+            background: var(--primary);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: var(--light);
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('rasuni.jpg');
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--light);
+            padding: 0 1rem;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--light);
+        }
+
+        .btn-primary:hover {
+            background: #ff3333;
+            transform: translateY(-2px);
+        }
+
+        .btn-order {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(45deg, #ff6f61, #ff9671);
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+
+        }
+
+        .btn-order:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 77, 77, 0.7);
+        }
+
+        .btn-order {
+            margin: 20px auto;
+            display: block;
+            width: 40%;
+        }
+
+        .section {
+            padding: 5rem 1rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-item {
+            background: var(--light);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .menu-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .menu-item-content {
+            padding: 1.5rem;
+        }
+
+        .menu-item-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .menu-item-price {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .contact {
+            background: #f9f9f9;
+        }
+
+        .contact-info {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-item i {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .map {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .social-links a {
+            color: var(--dark);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+        }
+
+        footer {
+            background: var(--dark);
+            color: var(--light);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .section {
+                padding: 3rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">Kedai Teras Rasuni</a>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <h1>Kedai Teras Rasuni</h1>
+            <p>Enak dan Lezat </p>
+
+        </div>
+    </section>
+
+    <section id="menu" class="section">
+        <div class="section-title" data-aos="fade-up">
+            <h2>Menu Kami</h2>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-item" data-aos="fade-up">
+                <img src="baksobakarasli.jpg" alt=" Bakar">
+                <div class="menu-item-content">
+                    <h3 class="menu-item-title">Bakso Bakar</h3>
+                    <p class="menu-item-price">Rp 5.000 - Rp 10.000</p>
+                </div>
+            </div>
+            <div class="menu-item" data-aos="fade-up" data-aos-delay="100">
+                <img src="Baksogoreng.jpg" alt="Bakso Goreng">
+                <div class="menu-item-content">
+                    <h3 class="menu-item-title">Bakso Goreng</h3>
+                    <p class="menu-item-price">Rp 12.000</p>
+                </div>
+            </div>
+            <div class="menu-item" data-aos="fade-up" data-aos-delay="200">
+                <img src="sosisbakar.jpg" alt="Sosis Bakar">
+                <div class="menu-item-content">
+                    <h3 class="menu-item-title">Sosis Bakar</h3>
+                    <p class="menu-item-price">Rp 6.000 - Rp 12.000</p>
+                </div>
+            </div>
+            <div class="menu-item" data-aos="fade-up">
+                <img src="burger.jpg" alt="Burger">
+                <div class="menu-item-content">
+                    <h3 class="menu-item-title">Burger</h3>
+                    <p class="menu-item-price">Rp 7.000 - Rp 35.000</p>
+                </div>
+            </div>
+            <div class="menu-item" data-aos="fade-up" data-aos-delay="100">
+                <img src="Indomie.jpg" alt="Indomie Telur">
+                <div class="menu-item-content">
+                    <h3 class="menu-item-title">Indomie </h3>
+                    <p class="menu-item-price">Rp 7.000 - Rp 30.000</p>
+                </div>
+            </div>
+            <div class="menu-item" data-aos="fade-up" data-aos-delay="200">
+                <img src="drink.jpg" alt="Minuman">
+                <div class="menu-item-content">
+                    <h3 class="menu-item-title">Minuman Dingin/Panas</h3>
+                    <p class="menu-item-price">Rp 5.000 - Rp 7.000</p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <form action="menu.html" method="GET">
+            <button type="submit" class="btn-order">Lihat Menu</button>
+        </form>
+
+        <section class="section contact">
+            <div class="section-title" data-aos="fade-up">
+                <h2>Hubungi Kami</h2>
+            </div>
+            <div class="contact-info">
+                <div class="contact-item" data-aos="fade-up">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p>Jl. Diponegoro (Depan Klinik Diponegoro)</p>
+                </div>
+                <div class="contact-item" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fas fa-phone"></i>
+                    <p>+62 823-4738-3551</p>
+                </div>
+                <div class="contact-item" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-clock"></i>
+                    <p>Buka Setiap Hari: 10:00 - 22:00</p>
+                </div>
+                <div class="social-links">
+                    <a href="https://instagram.com/kedaiterasrasuni" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://facebook.com/KedaiTerasRasuni" target="_blank">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://wa.me/6282347383551" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+                <div id="peta"></div>
+        </section>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var map = L.map('peta').setView([-6.1202026, 120.4608986], 15); // Coordinates of your UMKM
+                var streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                });
+                var satelliteLayer = L.tileLayer('https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Maxar, Earthstar Geographics, CNES/Airbus DS, and the GIS User Community',
+                    subdomains: ['server', 'services', 'map']
+                });
+
+
+
+                // Add a custom marker for your UMKM location
+                var umkmLocation = L.marker([-6.120478, 120.461012]).addTo(map);
+
+                // Add a styled popup with information about your UMKM
+                umkmLocation.bindPopup(`
+    <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
+        <h3 style="color: #FF4D4D; font-size: 20px;">Kedai Teras Rasuni</h3>
+        <p style="font-size: 16px; margin-bottom: 10px;"><strong>Alamat:</strong> Jl. Diponegoro (Depan klinik Diponegoro)</p>
+        <p style="font-size: 16px; margin-bottom: 10px;"><strong>Telp:</strong> +62 823-4738-3551</p>
+        <p style="font-size: 16px; margin-bottom: 10px;"><strong>buka: Buka Setiap Hari Pukul 10.00-22.00</p>
+    </div>
+`).openPopup();
+
+
+                // Create custom icons for GeoJSON layers
+                var schoolIcon = L.icon({
+                    iconUrl: 'education.png', // Replace with the URL to the school icon image
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32],
+                    popupAnchor: [0, -32]
+                });
+
+                var mosqueIcon = L.icon({
+                    iconUrl: 'mosque.png', // Replace with the URL to the mosque icon image
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32],
+                    popupAnchor: [0, -32]
+                });
+
+                // Layer Groups for GeoJSON data (unchanged)
+                var bentengSelatanLayer = L.layerGroup();
+                var bentengUtaraLayer = L.layerGroup();
+                var kotaBentengLayer = L.layerGroup();
+                var roadLayer = L.layerGroup();
+                var masjidLayer = L.layerGroup();
+                var sekolahLayer = L.layerGroup();
+
+
+
+                // Fetch and add GeoJSON files to the map with custom icons
+                fetch("./bentengselatan.geojson")
+                    .then((response) => response.json())
+                    .then((geojsonData) => {
+                        L.geoJSON(geojsonData, {
+                            style: {
+                                color: "blue",
+                                weight: 1.5,
+                                opacity: 0.8,
+                                fillColor: "blue",
+                                fillOpacity: 0.2,
+                            }
+                        }).addTo(bentengSelatanLayer);
+                    })
+                    .catch((error) =>
+                        console.error("Error loading bentengselatan GeoJSON:", error)
+                    );
+
+                fetch("./bentengutara.geojson")
+                    .then((response) => response.json())
+                    .then((geojsonData) => {
+                        L.geoJSON(geojsonData, {
+                            style: {
+                                color: "red",
+                                weight: 1.5,
+                                opacity: 0.8,
+                                fillColor: "red",
+                                fillOpacity: 0.2,
+                            }
+                        }).addTo(bentengUtaraLayer);
+                    })
+                    .catch((error) =>
+                        console.error("Error loading bentengutara GeoJSON:", error)
+                    );
+
+                fetch("./kotabenteng.geojson")
+                    .then((response) => response.json())
+                    .then((geojsonData) => {
+                        L.geoJSON(geojsonData, {
+                            style: {
+                                color: "green",
+                                weight: 1.5,
+                                opacity: 0.8,
+                                fillColor: "green",
+                                fillOpacity: 0.2,
+                            }
+                        }).addTo(kotaBentengLayer);
+                    })
+                    .catch((error) =>
+                        console.error("Error loading kotabenteng GeoJSON:", error)
+                    );
+
+                fetch("./road.geojson")
+                    .then((response) => response.json())
+                    .then((geojsonData) => {
+                        L.geoJSON(geojsonData, {
+                            style: {
+                                color: "#000",
+                                weight: 1.5,
+                                opacity: 1,
+                                fillColor: "#000",
+                                fillOpacity: 0.5,
+                            }
+                        }).addTo(roadLayer);
+                    })
+                    .catch((error) =>
+                        console.error("Error loading road GeoJSON:", error)
+                    );
+
+                fetch("./masjidku.geojson")
+                    .then((response) => response.json())
+                    .then((geojsonData) => {
+                        L.geoJSON(geojsonData, {
+                            pointToLayer: function(feature, latlng) {
+                                return L.marker(latlng, {
+                                    icon: mosqueIcon
+                                });
+                            }
+                        }).addTo(masjidLayer);
+                    })
+                    .catch((error) =>
+                        console.error("Error loading masjidku GeoJSON:", error)
+                    );
+
+                fetch("./sekolahku.geojson")
+                    .then((response) => response.json())
+                    .then((geojsonData) => {
+                        L.geoJSON(geojsonData, {
+                            pointToLayer: function(feature, latlng) {
+                                return L.marker(latlng, {
+                                    icon: schoolIcon
+                                });
+                            }
+                        }).addTo(sekolahLayer);
+                    })
+                    .catch((error) =>
+                        console.error("Error loading sekolahku GeoJSON:", error)
+                    );
+
+
+                // Add control to switch between layers (unchanged)
+                var overlayMaps = {
+                    "Benteng Selatan": bentengSelatanLayer,
+                    "Benteng Utara": bentengUtaraLayer,
+                    "Kota Benteng": kotaBentengLayer,
+                    "Road": roadLayer,
+                    "Masjid": masjidLayer,
+                    "Sekolah": sekolahLayer,
+                    "Street Map": streetLayer,
+                    "Satelite ": satelliteLayer,
+                };
+
+                L.control.layers(null, overlayMaps, ).addTo(map);
+
+                // Default layer to show (unchanged)
+                bentengSelatanLayer.addTo(map); // You can adjust which layer is shown initially
+                bentengUtaraLayer.addTo(map); // You can adjust which layer is shown initially
+                kotaBentengLayer.addTo(map); // You can adjust which layer is shown initially
+                roadLayer.addTo(map); // You can adjust which layer is shown initially
+            });
+
+            $(document).ready(function() {
+                AOS.init({
+                    duration: 1000,
+                    once: true
+                });
+
+                // Smooth scrolling
+                $('a[href*="#"]').on('click', function(e) {
+                    e.preventDefault();
+                    $('html, body').animate({
+                            scrollTop: $($(this).attr('href')).offset().top - 70
+                        },
+                        500,
+                        'linear'
+                    );
+                });
+
+            });
+        </script>
+        <footer>
+            <p>&copy; 2024 Kedai Teras Rasuni. All rights reserved.</p>
+            <p>By: Indriyani Syam</p>
+        </footer>
+</body>
+
+</html>
